@@ -11,8 +11,6 @@ import ex0.Elevator;
 public class ShabatElevAlgo implements ElevatorAlgo {
     public static final int UP=1, DOWN=-1;
     private int _direction;
-
-
     private Building _building;
     public ShabatElevAlgo(Building b) {
         _building = b;
