@@ -86,32 +86,31 @@ public class ShabatElev3Algo implements ElevatorAlgo {
     }
     @Override
     public void cmdElevator(int elev) {
-//        if(!_firstTime[elev]) {
-//            if (this._building.numberOfElevetors() == 1) {
-//                f0();
-//            } else {
-//                if (elev % 2 == 0) {
-//                    f2(elev);
-//                } else {
-//                    f1(elev);
-//                }
-//            }
-//        }
-//        else {
-//
-//            _firstTime[elev] = false;
-//            int min = this._building.minFloor(), max = this._building.maxFloor();
-//            int areafloor = (max-min+1)/ _building.numberOfElevetors();
-//    ///       for(int i=0;i<this._building.numberOfElevetors();i++) {
-//                Elevator curr = this.getBuilding().getElevetor(elev);
-//    ////          int floor = rand(min,max);
-//        ///        curr.goTo(floor);
-//            curr.goTo(min +elev*areafloor);
-//
-//     ////     }
+        if(!_firstTime[elev]) {
+            if (this._building.numberOfElevetors() == 1) {
+                f0();
+            } else {
+                if (elev % 2 == 0) {
+                    f2(elev);
+                } else {
+                    f1(elev);
+                }
+            }
+        }
+        else {
+
+            _firstTime[elev] = false;
+            int min = this._building.minFloor(), max = this._building.maxFloor();
+
+           for(int i=0;i<this._building.numberOfElevetors();i++) {
+                Elevator curr = this.getBuilding().getElevetor(elev);
+              int floor = rand(min,max);
+                curr.goTo(floor);
+
+          }
         }
 
- //   }
+  }
     private void f1(int elev) { // odd --> UP
         Elevator curr = this.getBuilding().getElevetor(elev);
         if(curr.getState() == Elevator.LEVEL) {

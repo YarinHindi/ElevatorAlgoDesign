@@ -9,20 +9,15 @@ public class OurElevatorAlgo implements ElevatorAlgo {
     public static final int UP = 1, DOWN = -1;
     public CallListOnline Lists;
     private int _direction;
-    private boolean[] _firstTime;
-     public ArrayList<Integer> PlacesOf_Elevator;
     private Building _building;
 
 
     public OurElevatorAlgo(Building b) {
         _building = b;
         _direction = UP;
-        PlacesOf_Elevator = new ArrayList<Integer>();
         Lists = new CallListOnline(_building.numberOfElevetors());
 
-
-        }
-
+    }
 
 
     @Override
@@ -40,37 +35,65 @@ public class OurElevatorAlgo implements ElevatorAlgo {
         int ans = 0, elevNum = _building.numberOfElevetors();
         if (elevNum > 1) {
             for (int i = 1; i < elevNum; i++) {
-                if (dist(c.getSrc(), i, c.getDest()) < dist(c.getSrc(), ans, c.getDest())) {
+                if (dist(i, c) < dist(i, c)) {
                     ans = i;
                 }
             }
         }
-        Lists.add(c,ans);
+        Lists.add(c, ans);
         return ans;
     }
 
-    private double dist(int src, int elev, int dest) {
+    private double dist(int elev, CallForElevator call) {
+        Lists.add(call, elev);
         Elevator thisElev = this._building.getElevetor(elev);
         int pos = thisElev.getPos();
         double speed = thisElev.getSpeed();
         double totalTime = 0;
         int floors = 0;
-        if (Lists.ElevatorsGoTo[elev].size() > 0) {
-            floors = Math.abs(Lists.ElevatorsGoTo[elev].get(0) - thisElev.getPos());
-        }
         double floorTime = thisElev.getStopTime() + thisElev.getStartTime() + thisElev.getTimeForOpen() + thisElev.getTimeForClose();
-        for (int i = 0; i < Lists.ElevatorsGoTo[elev].size(); i++) {
-            if (i != Lists.ElevatorsGoTo[elev].size()-1) {
-                floors += Math.abs(Lists.ElevatorsGoTo[elev].get(i+1) - Lists.ElevatorsGoTo[elev].get(i));
+        //gonna chech all the cases for the call and the elevator state
+        if(thisElev.getState()==1&&call.getType()==1&&thisElev.getPos()<call.getSrc()){
+        for (int i = 0; i < Lists.Upcalls[elev].size(); i++) {
+            if(thisElev.getPos()<=Lists.Upcalls[elev].get(i)){
+                floors++;
             }
-            for (int j = 0; j < Lists.ElevatorsOnTheWay[elev].size(); j++) {
-                totalTime += floorTime;
             }
-            totalTime += floorTime;
+            totalTime = (call.getDest()-thisElev.getPos())/speed + floorTime * floors;
         }
-        totalTime += floors*speed;
+        else if(thisElev.getState()==-1&&call.getType()==-1&&thisElev.getPos()>call.getSrc()){
+            for (int i = 0 ;i < Lists.Downcalls[elev].size(); i++) {
+                if(thisElev.getPos()>=Lists.Downcalls[elev].get(i)){
+                  floors++;
+                }
+            }
+            totalTime = (call.getDest()-thisElev.getPos())/speed + floorTime * floors;
+        }else if(thisElev.getState()==1&&call.getType()==1&&thisElev.getPos()>call.getSrc()){
+            for (int i = 0; i <Lists.Upcalls[elev].size() ; i++) {
+                if(thisElev.getPos()<=Lists.Upcalls[elev].get(i)){
+                    floors++;
+            }
+        }
+            for (int i = 0; i < ; i++) {
+
+            }
+        Lists.ElevatorsList[elev].remove(call);
+        if (call.getType() == 1) {
+            Lists.Upcalls[elev].remove(call.getSrc());
+            Lists.Upcalls[elev].remove(call.getDest());
+        } else {
+            if (call.getType() == 1) {
+                Lists.Downcalls[elev].remove(call.getSrc());
+                Lists.Downcalls[elev].remove(call.getDest());
+            } else {
+
+            }
+
+//
+        }
         return totalTime;
     }
+
 
 
     public int getDirection() {
@@ -79,28 +102,35 @@ public class OurElevatorAlgo implements ElevatorAlgo {
 
 
     public void cmdElevator(int elev) {
-       Elevator curr = this.getBuilding().getElevetor(elev);
-        for (int i = 0; i < Lists.ElevatorsList[elev].size(); i++) {
-            Lists.remove(Lists.ElevatorsList[elev].get(i), elev);
-        }
-        if (Lists.ElevatorsGoTo[elev].size() > 0) {
-            if (curr.getPos() == Lists.ElevatorsGoTo[elev].get(0)) {
-                Lists.ElevatorsGoTo[elev].remove(0);
+        Elevator curr = this.getBuilding().getElevetor(elev);
+        if (Lists.elevRoute[elev].size() > 0 && curr.getPos() == Lists.elevRoute[elev].get(0)) {
+            Lists.elevRoute[elev].remove(0);
+            for (int i = 0; i < Lists.ElevatorsList[elev].size(); i++) {
+                Lists.remove(Lists.ElevatorsList[elev].get(i), elev);
+
             }
-            if (Lists.ElevatorsOnTheWay[elev].size() > 0) {
-                if (curr.getPos() == Lists.ElevatorsOnTheWay[elev].get(0)) {
-                    Lists.ElevatorsOnTheWay[elev].remove(0);
+
+        }
+        if (Lists.elevRoute[elev].size() > 0) {
+            curr.goTo(Lists.elevRoute[elev].get(0));
+            for (int i = 0; i <Lists.ElevatorsList[elev].size() ; i++) {
+                if(curr.getState()==Elevator.UP&&Lists.ElevatorsList[elev].get(i).getState()==Elevator.UP&&curr.getPos()<Lists.ElevatorsList[elev].get(i).getSrc()){
+                    curr.stop(Lists.ElevatorsList[elev].get(i).getSrc());
+                    curr.goTo(Math.min(Lists.ElevatorsList[elev].get(i).getDest(),Lists.elevRoute[elev].get(0)));
+                    curr.goTo(Math.max(Lists.ElevatorsList[elev].get(i).getDest(),Lists.elevRoute[elev].get(0)));
+
+
                 }
-            }
+
         }
-        for (int i = 0; i < Lists.ElevatorsGoTo[elev].size(); i++) {
-            curr.goTo(Lists.ElevatorsGoTo[elev].get(i));
-            for (int j = 0; j < Lists.ElevatorsOnTheWay[elev].size(); j++) {
-                curr.stop(Lists.ElevatorsOnTheWay[elev].get(j));
-            }
-        }
-        curr.goTo(0);
+
     }
+
+
+
+   }
+
+
 
         private static int rand ( int min, int max){
         if(max<min){
