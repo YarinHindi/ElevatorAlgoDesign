@@ -28,16 +28,16 @@ public class  CallListOnline {
 
 
     public  void add(CallForElevator callForElevator,int elev) {
-      if(callForElevator.getType()==1) {
-          this.Upcalls[elev].add(callForElevator.getSrc());
-          this.Upcalls[elev].add(callForElevator.getDest());
-          Collections.sort(Upcalls[elev]);
-      }else{
-          this.Downcalls[elev].add(callForElevator.getSrc());
-          this.Downcalls[elev].add(callForElevator.getDest());
-          Collections.sort(Downcalls[elev]);
-      }
-     this.ElevatorsList[elev].add(callForElevator);
+        if(callForElevator.getType()==1) {
+            this.Upcalls[elev].add(callForElevator.getSrc());
+            this.Upcalls[elev].add(callForElevator.getDest());
+            Collections.sort(Upcalls[elev]);
+        }else{
+            this.Downcalls[elev].add(callForElevator.getSrc());
+            this.Downcalls[elev].add(callForElevator.getDest());
+            Collections.sort(this.Downcalls[elev], Collections.reverseOrder());
+        }
+        this.ElevatorsList[elev].add(callForElevator);
 
     }
 
@@ -47,6 +47,7 @@ public class  CallListOnline {
         }
     }
 }
+
 
 
 
