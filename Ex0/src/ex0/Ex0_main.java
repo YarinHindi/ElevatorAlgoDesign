@@ -13,7 +13,7 @@ public class Ex0_main {
     public static void main(String[] ar) {
         String codeOwner = codeOwner();
         Simulator_A.setCodeOwner(codeOwner);
-        int stage = 9;  // any case in [0,9].
+        int stage = 7;  // any case in [0,9].
         System.out.println("Ex0 Simulator: isStarting, stage="+stage+") ... =  ");
         String callFile = null; // use the predefined cases [1-9].
         // String callFile = "data/Ex0_stage_2__.csv"; //
@@ -21,7 +21,7 @@ public class Ex0_main {
 
         // ElevatorAlgo ex0_alg = new ShabatElevAlgo(Simulator_A.getBuilding());  // The simplest algo ever (Shabat Elev).
         //ElevatorAlgo ex0_alg = new ShabatElev2Algo(Simulator_A.getBuilding()); // Shabat Elev with a minor twist
-        //ElevatorAlgo ex0_alg = new ShabatElev3Algo(Simulator_A.getBuilding());
+       // ElevatorAlgo ex0_alg = new ShabatElev3Algo(Simulator_A.getBuilding());
        ElevatorAlgo ex0_alg = new OurElevatorAlgo(Simulator_A.getBuilding());    // Shabat Elev with two trick - replace with your code;
         Simulator_A.initAlgo(ex0_alg); // init the algorithm to be used by the simulator
 
@@ -42,19 +42,7 @@ public class Ex0_main {
         return owners;
     }
 
-//        int ans;
-//        Elevator curr;
-//            if (_building.minFloor() < 0) {
-//                ans = (c.getSrc() + (_building.minFloor()) * (-1));
-//                curr = this.getBuilding().getElevetor(PlacesOf_Elevator[ans]);
-//                return PlacesOf_Elevator[ans];
-//            } else if (_building.minFloor() > 0) {
-//                ans = c.getSrc() + _building.minFloor();
-//                curr = this.getBuilding().getElevetor(PlacesOf_Elevator[ans]);
-//                return PlacesOf_Elevator[ans];
-//            } else
-//                curr = this.getBuilding().getElevetor(PlacesOf_Elevator[c.getSrc()]);
-//            return PlacesOf_Elevator[c.getSrc()];
+
 
 
 }
